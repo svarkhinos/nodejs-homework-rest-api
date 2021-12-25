@@ -1,44 +1,23 @@
 import express from "express";
-import model from "../../model/index";
+import {
+  getContacts,
+  getContactById,
+  deleteContact,
+  updateContact,
+  addContact,
+} from "../../controllers/contacts";
 import { validateCreate, validateUpdate, validateId } from "./validation";
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
-  const contacts = await model.listContacts();
-  res.status(200).json(contacts);
-});
+router.get("/", getContacts);
 
-router.get("/:id", validateId, async (req, res, next) => {
-  const { id } = req.params;
-  const contact = await model.getContactById(id);
-  if (contact) {
-    return res.status(200).json(contact);
-  }
-  res.status(404).json({ message: "Not found" });
-});
+router.get("/:id", validateId, getContactById);
 
-router.post("/", validateCreate, async (req, res, next) => {
-  const newContact = await model.addContact(req.body);
-  res.status(201).json(newContact);
-});
+router.post("/", validateCreate, addContact);
 
-router.delete("/:id", async (req, res, next) => {
-  const { id } = req.params;
-  const contact = await model.removeContact(id);
-  if (contact) {
-    return res.status(200).json({ message: "contact deleted" });
-  }
-  res.status(404).json({ message: "Not found" });
-});
+router.delete("/:id", deleteContact);
 
-router.put("/:id", validateUpdate, async (req, res, next) => {
-  const { id } = req.params;
-  const contact = await model.updateContact(id, req.body);
-  if (contact) {
-    return res.status(200).json(contact);
-  }
-  res.status(404).json({ message: "Not found" });
-});
+router.put("/:id", validateUpdate, updateContact);
 
 export default router;
