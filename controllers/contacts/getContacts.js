@@ -1,6 +1,9 @@
-import model from "../../model/index";
+import repositoryContacts from "../../repository/contacts";
+import { HttpCode } from "../../lib/contacts";
 
 export const getContacts = async (req, res, next) => {
-  const contacts = await model.listContacts();
-  res.status(200).json(contacts);
+  const contacts = await repositoryContacts.listContacts(req.query);
+  res
+    .status(HttpCode.OK)
+    .json({ status: "success", code: HttpCode.OK, data: { contacts } });
 };

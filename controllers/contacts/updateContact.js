@@ -1,10 +1,15 @@
-import model from "../../model/index";
+import repositoryContacts from "../../repository/contacts";
+import { HttpCode } from "../../lib/contacts";
 
 export const updateContact = async (req, res, next) => {
   const { id } = req.params;
-  const contact = await model.updateContact(id, req.body);
+  const contact = await repositoryContacts.updateContact(id, req.body);
   if (contact) {
-    return res.status(200).json(contact);
+    return res
+      .status(HttpCode.OK)
+      .json({ status: "success", code: HttpCode.OK, data: { contact } });
   }
-  res.status(404).json({ message: "Not found" });
+  res
+    .status(HttpCode.NOT_FOUND)
+    .json({ status: "error", code: HttpCode.NOT_FOUND, message: "Not found" });
 };
