@@ -13,19 +13,24 @@ import {
   validateUpdateFavorite,
   validateQuery,
 } from "./validation";
+import guard from "../../../middlewares/guard";
 
 const router = express.Router();
 
-router.get("/", validateQuery, getContacts);
+router.get("/", guard, validateQuery, getContacts);
 
-router.get("/:id", validateId, getContactById);
+router.get("/:id", [guard, validateId], getContactById);
 
-router.post("/", validateCreate, addContact);
+router.post("/", [guard, validateCreate], addContact);
 
-router.delete("/:id", deleteContact);
+router.delete("/:id", [guard, validateId], deleteContact);
 
-router.put("/:id", validateUpdate, updateContact);
+router.put("/:id", [guard, validateId, validateUpdate], updateContact);
 
-router.patch("/:id/favorite", validateUpdateFavorite, updateContact);
+router.patch(
+  "/:id/favorite",
+  [guard, validateId, validateUpdateFavorite],
+  updateContact
+);
 
 export default router;
